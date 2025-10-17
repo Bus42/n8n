@@ -35,11 +35,20 @@ services:
     command: ["--access-mode=unrestricted", "--transport=sse"]
     ports:
       - "7777:8000"
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:8000/sse || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - internal
+    labels:
+      - "mcp.endpoint=http://192.168.50.63:7777/sse"
+      - "mcp.description=Postgres MCP Server - AI-powered database operations"
 
   n8n:
     image: docker.n8n.io/n8nio/n8n:latest
