@@ -27,6 +27,20 @@ services:
     networks:
       - internal
 
+  postgres-mcp:
+    image: crystaldba/postgres-mcp:latest
+    restart: always
+    environment:
+      - DATABASE_URI=postgresql://${POSTGRES_NON_ROOT_USER}:${POSTGRES_NON_ROOT_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    command: ["--access-mode=unrestricted", "--transport=sse"]
+    ports:
+      - "7777:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+
   n8n:
     image: docker.n8n.io/n8nio/n8n:latest
     restart: always
@@ -49,6 +63,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      postgres-mcp:
+        condition: service_started
     volumes:
       - n8n_storage:/home/node/.n8n
     networks:
