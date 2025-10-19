@@ -5,6 +5,8 @@ volumes:
 networks:
   internal:
     driver: bridge
+  frontend:
+    external: true
 
 services:
   postgres:
@@ -68,7 +70,7 @@ services:
       - N8N_PORT=5678
       - N8N_SECURE_COOKIE=false
     ports:
-      - "192.168.50.63:5678:5678"
+      - "5678:5678"
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,5 +80,9 @@ services:
       - n8n_storage:/home/node/.n8n
     networks:
       - internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.n8n-postgres.rule=Host(`www.studio42lab.com`)
+      - traefik.http.routers.n8n-postgres.entrypoints=web
     extra_hosts:
       - "host.docker.internal:host-gateway"
