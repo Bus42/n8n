@@ -21,4 +21,4 @@ run_cmd docker pull docker.n8n.io/n8nio/n8n
 # Step 3: Bring containers back up
 run_cmd docker compose up -d --remove-orphans
 
-echo "🎉 All steps completed successfully. n8n is up and running!"
+echo "🎉 All steps completed successfully. n8n is up and running with Postgres and Postgres MCP server!"
