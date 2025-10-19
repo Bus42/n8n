@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"n8n-postgres-mcp": {
+			"url": "http://192.168.50.63:7777/sse",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
