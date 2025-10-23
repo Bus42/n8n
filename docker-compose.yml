@@ -5,11 +5,13 @@ volumes:
 networks:
   internal:
     driver: bridge
-  frontend:
+  default:
     external: true
+    name: local-services
 
 services:
   postgres:
+    container_name: postgres-n8n
     image: postgres:16
     restart: always
     environment:
@@ -30,6 +32,7 @@ services:
       - internal
 
   postgres-mcp:
+    container_name: postgres-mcp-n8n
     image: crystaldba/postgres-mcp:latest
     restart: always
     environment:
@@ -53,6 +56,7 @@ services:
       - "mcp.description=Postgres MCP Server - AI-powered database operations"
 
   n8n:
+    container_name: n8n
     image: docker.n8n.io/n8nio/n8n:latest
     restart: always
     environment:
@@ -66,7 +70,7 @@ services:
       # n8n config
       - GENERIC_TIMEZONE=America/Denver
       - N8N_PROTOCOL=http
-      - N8N_HOST=192.168.50.63
+      - N8N_HOST=192.168.50.64
       - N8N_PORT=5678
       - N8N_SECURE_COOKIE=false
     ports:
@@ -80,9 +84,5 @@ services:
       - n8n_storage:/home/node/.n8n
     networks:
       - internal
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.n8n-postgres.rule=Host(`www.studio42lab.com`)
-      - traefik.http.routers.n8n-postgres.entrypoints=web
     extra_hosts:
       - "host.docker.internal:host-gateway"
