@@ -2,8 +2,38 @@ function n8nFunction(weeklySchedule) {
     // Variables
     let error;
     const streamers = [];
-    const available = [];
+    const available = {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: []
+    };
     const shortlist = [];
+
+    function addToAvailableSlots(time) {
+        const formattedTime = formatDayAndTime(time);
+        const formattedTimeParts = formattedTime.split(' ')
+        switch (formattedTimeParts[0]) {
+            case 'Mon':
+                available.monday.push(formattedTimeParts[1])
+                break;
+            case 'Tue':
+                available.tuesday.push(formattedTimeParts[1])
+                break;
+            case 'Wed':
+                available.wednesday.push(formattedTimeParts[1])
+                break;
+            case 'Thu':
+                available.thursday.push(formattedTimeParts[1])
+                break;
+            case 'Fri':
+                available.friday.push(formattedTimeParts[1])
+                break;
+            default:
+                error = `Error adding time slot to available slots: ${formattedTimeParts[0]} ${formattedTimeParts[1]} ${formattedTimeParts[2]}`;
+        }
+    }
 
     // Helper: Parse datetime string (ignore timezone, treat as UTC)
     function parseDateTimeWithTimezone(dateStr) {
@@ -42,7 +72,7 @@ function n8nFunction(weeklySchedule) {
                     shortlist.push(stop.channel_name)
                 }
             } else {
-                available.push({ time: formatDayAndTime(stop.start_datetime) });
+                addToAvailableSlots(stop.start_datetime)
             }
         });
     });
